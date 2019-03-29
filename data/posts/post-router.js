@@ -61,6 +61,32 @@ router.delete('/:id', async (req, res) => {
     }
 })
 
+// Edit an action by ID
+router.put('/:id', async (req, res) => {
+    const id = req.params.id;
+    const post = req.body;
+    if(id) {
+        try {
+            if (!post) {
+                res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
+            }
+            await Posts.update(id, post)
+            .then(post => {
+                res.status(201).json(post);
+            })
+            .catch(error => {
+                res.status(500).json({error: "The post information could not be modified." })
+            })
+        }
+        catch(error) {
+            console.log(error);
+            res.status(500).json({error: "you fucked up somewhere along the line" })
+        }
+    } else {
+        res.status(404).json({message: "The post with the specified ID does not exist."})
+    }
+})
+
 
 
 module.exports = router;
